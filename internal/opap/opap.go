@@ -125,43 +125,12 @@ type drawsService struct {
 	Endpoint string
 }
 
-type draws struct {
-	Draw Draw `json:"draw"`
-}
-
-type drawsByDate struct {
-	Draws struct {
-		Draw []Draw `json:"draw"`
-	} `json:"draws"`
-}
-
-func (s *drawsService) Latest(g Game) (*PasedDraws, *http.Response, error) {
-	d := new(PasedDraws)
-	u := fmt.Sprint(defaultBaseURL, g, "/draw-id/1/10")
+func (s *drawsService) ByDate(g Game, drawDate string) (*DrawsByDate, *http.Response, error) {
+	d := new(DrawsByDate)
+	u := fmt.Sprintf("%s/%d/draw-date/%s/%s", defaultBaseURL, g, drawDate, drawDate)
 	resp, err := s.client.get(u, d)
 	if err != nil {
 		return nil, resp, err
 	}
 	return d, resp, nil
-}
-
-func (s *drawsService) ByNumber(g Game, number int) (*Draw, *http.Response, error) {
-	d := new(draws)
-	u := fmt.Sprint(defaultBaseURL, g, number)
-	resp, err := s.client.get(u, d)
-	if err != nil {
-		return nil, resp, err
-	}
-	return &d.Draw, resp, nil
-}
-
-func (s *drawsService) ByDate(g Game, day, month, year int) ([]Draw, *http.Response, error) {
-	d := new(drawsByDate)
-	date := fmt.Sprintf("%d-%d-%d", day, month, year)
-	u := fmt.Sprint(defaultBaseURL, g, date)
-	resp, err := s.client.get(u, d)
-	if err != nil {
-		return nil, resp, err
-	}
-	return d.Draws.Draw, resp, nil
 }
