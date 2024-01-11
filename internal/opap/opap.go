@@ -125,9 +125,9 @@ type drawsService struct {
 	Endpoint string
 }
 
-func (s *drawsService) ByDate(g Game, drawDate string) (*DrawsByDate, *http.Response, error) {
+func (s *drawsService) ByDate(g Game, drawDate string, limit string) (*DrawsByDate, *http.Response, error) {
 	d := new(DrawsByDate)
-	u := fmt.Sprintf("%s/%d/draw-date/%s/%s", defaultBaseURL, g, drawDate, drawDate)
+	u := fmt.Sprintf("%s/%d/draw-date/%s/%s%s", defaultBaseURL, g, drawDate, drawDate, limit)
 	resp, err := s.client.get(u, d)
 	if err != nil {
 		return nil, resp, err
